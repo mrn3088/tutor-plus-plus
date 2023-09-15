@@ -11,9 +11,11 @@ from htmlTemplates import  css, bot_template, user_template
 from langchain.llms import HuggingFaceHub
 
 def get_pdf_text(pdf_docs):
+    print(type(pdf_docs[0]))
     text = ""
     for pdf in pdf_docs:
         pdf_reader = PdfReader(pdf)
+        print(pdf_reader)
         for page in pdf_reader.pages:
             text += page.extract_text()
     return text
