@@ -1,5 +1,10 @@
 css = '''
 <style>
+
+.body {
+    background-color: #0000ff; /* Change 'blue' to your desired background color */
+}
+
 .chat-message {
     padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex
 }
