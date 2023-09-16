@@ -1,0 +1,1 @@
+Web 使用一种名为 HTTP（HyperText Transfer Protocol，超文本传输协 议 1）的协议作为规范，完成从客户端到服务器端等一系列运作流 程。而协议是指规则的约定。可以说，Web 是建立在 HTTP 协议上通 信的。

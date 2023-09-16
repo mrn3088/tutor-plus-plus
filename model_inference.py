@@ -26,19 +26,17 @@ def model_inference(input):
     }
     
     response = requests.post(url=url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
-    print(response)
     if response.status_code != 200:
         print(response.reason, response.text)
     else:
         obj_json = response.json()
-        print("This is object json", obj_json)
     if obj_json['code'] != 0:
         print(obj_json)
     else:
         data_str = obj_json['data']['data']
-        if data_str == '':
-            return "Network error. Please try agian later."
         data_obj = json.loads(data_str)
-        print(data_obj)
+        # print(data_obj)
         return data_obj['<ans>']
         
+
+    

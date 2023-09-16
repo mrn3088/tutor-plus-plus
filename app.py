@@ -1,18 +1,9 @@
 import streamlit as st
 from dotenv import load_dotenv
-from PyPDF2 import PdfReader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
-from htmlTemplates import css, bot_template, user_template
-from langchain.llms import HuggingFaceHub
-import requests
-import json
-import hashlib
-import time
+from htmlTemplates import css, bot_template
+from api import query
 
 from model_inference import *
 from utils import *
@@ -22,13 +13,21 @@ from utils import *
 input = ""
 
 
+def load_models():
+    embeddings = HuggingFaceEmbeddings(model_name="shibing624/text2vec-base-chinese")
+    db_videos_coarse = FAISS.load_local("./embeddings/faiss_youtube_embedding", embeddings)
+    db_books_coarse = FAISS.load_local("./embeddings/faiss_pdf_embedding", embeddings)
+    db_videos = FAISS.load_local("./embeddings/faiss_youtube_embedding_paging", embeddings)
+    db_books = FAISS.load_local("./embeddings/faiss_pdf_embedding_paging", embeddings)
+    return embeddings, db_videos_coarse, db_books_coarse, db_videos, db_books
+
 def handle_userinput(user_question):
     # Use question_utils to format user input
-    input_data = question_utils(input, user_question)
+    print("***question: ", user_question)
 
     # Use model_inference to perform inference
-    response = model_inference(input_data)
-
+    response = query(db_videos_coarse=st.session_state.db_videos_coarse, db_books_coarse=st.session_state.db_books_coarse, db_videos=st.session_state.db_videos, db_books=st.session_state.db_books, question=user_question)
+    print("***response: ", response)
     st.session_state.chat_history = response
 
     # Assuming response is a single string message
@@ -40,6 +39,11 @@ def main():
     st.set_page_config(page_title="Justice: What's The Right Thing To Do?",
                        page_icon=":books:")
 
+    # Check if the models are already loaded in session state
+    if "embeddings" not in st.session_state:
+        with st.spinner("加载模型中..."):
+            st.session_state.embeddings, st.session_state.db_videos_coarse, st.session_state.db_books_coarse, st.session_state.db_videos, st.session_state.db_books = load_models()
+    # Otherwise, the models are already in session state and we don't need to reload them
     st.markdown(css, unsafe_allow_html=True)
 
     # if "conversation" not in st.session_state:
@@ -55,81 +59,10 @@ def main():
     
     user_question = st.text_input(
         "Ask a question about the book and its related course:")
-    if st.button("Submit") | (user_question is not None):
-        with st.spinner("Processing"):
+    if st.button("Submit") and (user_question is not None):
+        with st.spinner("处理中..."):
             handle_userinput(user_question)
-
-    # with st.sidebar:
-    #     st.subheader("Your documents")
-    #     pdf_docs = st.file_uploader(
-    #         "Upload your PDFs here and click on 'Process'", accept_multiple_files=True)
-    #     if st.button("Process"):
-    #         with st.spinner("Processing"):
-    #             # get pdf text
-    #             raw_text = get_pdf_text(pdf_docs)
-
-    #             # get the text chunks
-    #             text_chunks = get_text_chunks(raw_text)
-
-    #             # create vector store
-    #             vectorstore = get_vectorstore(text_chunks)
-
-    #             # create conversation chain
-    #             st.session_state.conversation = get_conversation_chain(
-    #                 vectorstore)
-
 
 if __name__ == '__main__':
     main()
 
-
-# def get_pdf_text(pdf_docs):
-#     text = ""
-#     for pdf in pdf_docs:
-#         pdf_reader = PdfReader(pdf)
-#         for page in pdf_reader.pages:
-#             text += page.extract_text()
-#     return text
-
-
-# def get_text_chunks(text):
-#     text_splitter = CharacterTextSplitter(
-#         separator="\n",
-#         chunk_size=1000,
-#         chunk_overlap=200,
-#         length_function=len
-#     )
-#     chunks = text_splitter.split_text(text)
-#     return chunks
-
-
-# def get_vectorstore(text_chunks):
-#     embeddings = OpenAIEmbeddings()
-#     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
-#     return vectorstore
-
-
-# def get_conversation_chain(vectorstore):
-#     llm = ChatOpenAI()
-
-#     memory = ConversationBufferMemory(
-#         memory_key='chat_history', return_messages=True)
-#     conversation_chain = ConversationalRetrievalChain.from_llm(
-#         llm=llm,
-#         retriever=vectorstore.as_retriever(),
-#         memory=memory
-#     )
-#     return conversation_chain
-
-
-# def handle_userinput(user_question):
-#     response = st.session_state.conversation({'question': user_question})
-#     st.session_state.chat_history = response['chat_history']
-
-#     for i, message in enumerate(st.session_state.chat_history):
-#         if i % 2 == 0:
-#             st.write(user_template.replace(
-#                 "{{MSG}}", message.content), unsafe_allow_html=True)
-#         else:
-#             st.write(bot_template.replace(
-#                 "{{MSG}}", message.content), unsafe_allow_html=True)
