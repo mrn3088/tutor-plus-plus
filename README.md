@@ -6,6 +6,10 @@ Tutor++ is a powerful AI-driven Q&A framework that seamlessly queries local repo
 
 Tutor++ harnesses the prowess of the state-of-the-art CPM-Bee model with 100 billion parameters and integrates the Langchain large model framework, offering exceptional performance in both English and Chinese. Deployed on Amazon AWS, this advanced AI Q&A indexing system utilizes the FAISS vector database for swift searches, processing real-time queries by delving deep into local, user-defined repositories spanning various media formats, from PDFs to videos. Its unparalleled ability to pinpoint exact locations within documents and videos for answers is groundbreaking. Coupled with its user-centric design, expansive functionality, and superior adaptability, Tutor++ epitomizes the zenith of automated knowledge extraction and retrieval.
 
+## Demo
+
+[![视频封面](./images/demo.png)](https://youtu.be/tSGcbZLgzuY)
+
 ## Getting Started
 
 ### Dependencies
