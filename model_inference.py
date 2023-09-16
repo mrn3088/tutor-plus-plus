@@ -3,11 +3,10 @@ import json
 import hashlib
 import time
 
-
-endpoint_name = "cpm-bee-230915034844EVUY"
-ak = "21580531531411eeb4eb0242ac120004"
-sk = "naj4HJrZZe7V5pKL4g#x#AJ-QEzOTOxO"
-host = "saas-1222385307.us-west-2.elb.amazonaws.com"
+endpoint_name = "END_POINT_NAME"
+ak = "AK"
+sk = "SK"
+host = "HOST"
 
 timestemp = str(int(time.time()))
 hl = hashlib.md5()
