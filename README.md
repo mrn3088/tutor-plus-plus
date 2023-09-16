@@ -34,6 +34,10 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
+## Architecture
+![arch2](./images/arch2.png)  
+![arch1](./images/arch1.png)  
+
 ## Authors
 
 [@Xiu Yuan](https://github.com/xiuyuan0216)   
