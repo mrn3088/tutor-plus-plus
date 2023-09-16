@@ -40,17 +40,6 @@ def main():
     st.set_page_config(page_title="Justice: What's The Right Thing To Do?",
                        page_icon=":books:")
 
-    page_bg_img = '''
-    <style>
-    body {
-    background-image: url("https://images.unsplash.com/photo-1542281286-9e0a16bb7366");
-    background-size: cover;
-    }
-    </style>
-    '''
-
-    st.markdown(page_bg_img, unsafe_allow_html=True)
-
     st.markdown(css, unsafe_allow_html=True)
 
     # if "conversation" not in st.session_state:
@@ -59,10 +48,10 @@ def main():
     #     st.session_state.chat_history = None
 
     st.header("Justice: What's The Right Thing To Do? :books:")
-    st.subheader("Powered by :blue[Tutor++]", divider='rainbow')
+    st.subheader("Powered by :blue[Tutor++] :school:", divider='rainbow')
     st.caption(""""Justice: What's the Right Thing to Do?" is a book written by Michael J. Sandel, a prominent political philosopher and professor at Harvard University.
     The book explores various ethical and philosophical questions related to justice and morality. Sandel examines a wide range of topics, including distributive justice,
-    individual rights, the role of government, and the moral dilemmas that arise in everyday life.""")
+    individual rights, the role of government, and the moral dilemmas that arise in everyday life. Below is the course video link: [Course Link](https://www.youtube.com/playlist?list=PL30C13C91CFFEFEA6)""")
     
     user_question = st.text_input(
         "Ask a question about the book and its related course:")
